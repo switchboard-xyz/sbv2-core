@@ -1,0 +1,593 @@
+{
+  "tasks": [
+    {
+      "cacheTask": {
+        "cacheItems": [
+          {
+            "variableName": "ORCA_WHIRLPOOL_PUBKEY",
+            "job": {
+              "tasks": [
+                {
+                  "anchorFetchTask": {
+                    "programId": "NAZAREQQuCnkV8CpkGZaoB6ccmvikM8uRr4GKPWwmPT",
+                    "accountAddress": "AgTN3N43oQbRDM1WVAMf1uHw4w6RnhzvDk6CgC7ZeCmp"
+                  }
+                },
+                {
+                  "jsonParseTask": {
+                    "path": "$.whirlpoolId",
+                    "aggregationMethod": "NONE"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "variableName": "ORCA_WHIRLPOOL_POSITION_PUBKEY",
+            "job": {
+              "tasks": [
+                {
+                  "anchorFetchTask": {
+                    "programId": "NAZAREQQuCnkV8CpkGZaoB6ccmvikM8uRr4GKPWwmPT",
+                    "accountAddress": "AgTN3N43oQbRDM1WVAMf1uHw4w6RnhzvDk6CgC7ZeCmp"
+                  }
+                },
+                {
+                  "jsonParseTask": {
+                    "path": "$.positions[0].pubkey",
+                    "aggregationMethod": "NONE"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "variableName": "ORCA_WHIRLPOOL_POSITION_TICK_LOWER",
+            "job": {
+              "tasks": [
+                {
+                  "anchorFetchTask": {
+                    "programId": "NAZAREQQuCnkV8CpkGZaoB6ccmvikM8uRr4GKPWwmPT",
+                    "accountAddress": "AgTN3N43oQbRDM1WVAMf1uHw4w6RnhzvDk6CgC7ZeCmp"
+                  }
+                },
+                {
+                  "jsonParseTask": {
+                    "path": "$.positions[0].lowerTick",
+                    "aggregationMethod": "NONE"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "variableName": "ORCA_WHIRLPOOL_POSITION_TICK_UPPER",
+            "job": {
+              "tasks": [
+                {
+                  "anchorFetchTask": {
+                    "programId": "NAZAREQQuCnkV8CpkGZaoB6ccmvikM8uRr4GKPWwmPT",
+                    "accountAddress": "AgTN3N43oQbRDM1WVAMf1uHw4w6RnhzvDk6CgC7ZeCmp"
+                  }
+                },
+                {
+                  "jsonParseTask": {
+                    "path": "$.positions[0].upperTick",
+                    "aggregationMethod": "NONE"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "variableName": "ORCA_WHIRLPOOL_LIQUIDITY_IN_ESCROW",
+            "job": {
+              "tasks": [
+                {
+                  "anchorFetchTask": {
+                    "programId": "NAZAREQQuCnkV8CpkGZaoB6ccmvikM8uRr4GKPWwmPT",
+                    "accountAddress": "AgTN3N43oQbRDM1WVAMf1uHw4w6RnhzvDk6CgC7ZeCmp"
+                  }
+                },
+                {
+                  "jsonParseTask": {
+                    "path": "$.lastLiquidityIncrease",
+                    "aggregationMethod": "NONE"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "cacheTask": {
+        "cacheItems": [
+          {
+            "variableName": "TOKEN_A_PRICE",
+            "job": {
+              "tasks": [
+                {
+                  "oracleTask": {
+                    "switchboardAddress": "5Q2eJrnikAw1UBd3cJoBdkjB9Gqq8xjRjYhT3FiBqjPN"
+                  }
+                },
+                {
+                  "divideTask": {
+                    "big": "1000000"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "cacheTask": {
+        "cacheItems": [
+          {
+            "variableName": "TOKEN_B_PRICE",
+            "job": {
+              "tasks": [
+                {
+                  "oracleTask": {
+                    "switchboardAddress": "BjUgj6YCnFBZ49wF54ddBVA9qu8TeqkFtkbqmZcee8uW"
+                  }
+                },
+                {
+                  "divideTask": {
+                    "big": "1000000"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "cacheTask": {
+        "cacheItems": [
+          {
+            "variableName": "ORCA_POSITION_LIQUIDITY",
+            "job": {
+              "tasks": [
+                {
+                  "solanaAccountDataFetchTask": {
+                    "pubkey": "${ORCA_WHIRLPOOL_POSITION_PUBKEY}"
+                  }
+                },
+                {
+                  "bufferLayoutParseTask": {
+                    "offset": 72,
+                    "endian": "LITTLE_ENDIAN",
+                    "type": "u128"
+                  }
+                },
+                {
+                  "subtractTask": {
+                    "big": "${ORCA_WHIRLPOOL_LIQUIDITY_IN_ESCROW}"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "variableName": "ORCA_WHIRLPOOL_SQRT_PRICE",
+            "job": {
+              "tasks": [
+                {
+                  "solanaAccountDataFetchTask": {
+                    "pubkey": "${ORCA_WHIRLPOOL_PUBKEY}"
+                  }
+                },
+                {
+                  "bufferLayoutParseTask": {
+                    "offset": 65,
+                    "endian": "LITTLE_ENDIAN",
+                    "type": "u128"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "variableName": "P_A",
+            "job": {
+              "tasks": [
+                {
+                  "valueTask": {
+                    "value": 1.0001
+                  }
+                },
+                {
+                  "powTask": {
+                    "big": "${ORCA_WHIRLPOOL_POSITION_TICK_LOWER}"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "variableName": "P_B",
+            "job": {
+              "tasks": [
+                {
+                  "valueTask": {
+                    "value": 1.0001
+                  }
+                },
+                {
+                  "powTask": {
+                    "big": "${ORCA_WHIRLPOOL_POSITION_TICK_UPPER}"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "cacheTask": {
+        "cacheItems": [
+          {
+            "variableName": "SQRT_P_A",
+            "job": {
+              "tasks": [
+                {
+                  "valueTask": {
+                    "big": "${P_A}"
+                  }
+                },
+                {
+                  "powTask": {
+                    "big": "0.5"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "variableName": "SQRT_P_B",
+            "job": {
+              "tasks": [
+                {
+                  "valueTask": {
+                    "big": "${P_B}"
+                  }
+                },
+                {
+                  "powTask": {
+                    "big": "0.5"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "variableName": "SQRT_P_ORCA",
+            "job": {
+              "tasks": [
+                {
+                  "valueTask": {
+                    "big": "${ORCA_WHIRLPOOL_SQRT_PRICE}"
+                  }
+                },
+                {
+                  "divideTask": {
+                    "big": "18446744073709551616"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "variableName": "SQRT_P",
+            "job": {
+              "tasks": [
+                {
+                  "valueTask": {
+                    "big": "${TOKEN_A_PRICE}"
+                  }
+                },
+                {
+                  "divideTask": {
+                    "big": "${TOKEN_B_PRICE}"
+                  }
+                },
+                {
+                  "powTask": {
+                    "big": 0.5
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "cacheTask": {
+        "cacheItems": [
+          {
+            "variableName": "X_FRAC_UPPER",
+            "job": {
+              "tasks": [
+                {
+                  "valueTask": {
+                    "big": "${SQRT_P_B}"
+                  }
+                },
+                {
+                  "subtractTask": {
+                    "big": "${SQRT_P}"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "variableName": "X_FRAC_LOWER",
+            "job": {
+              "tasks": [
+                {
+                  "valueTask": {
+                    "big": "${SQRT_P}"
+                  }
+                },
+                {
+                  "multiplyTask": {
+                    "big": "${SQRT_P_B}"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "cacheTask": {
+        "cacheItems": [
+          {
+            "variableName": "TOKEN_A",
+            "job": {
+              "tasks": [
+                {
+                  "valueTask": {
+                    "big": "${ORCA_POSITION_LIQUIDITY}"
+                  }
+                },
+                {
+                  "multiplyTask": {
+                    "big": "${X_FRAC_UPPER}"
+                  }
+                },
+                {
+                  "divideTask": {
+                    "big": "${X_FRAC_LOWER}"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "cacheTask": {
+        "cacheItems": [
+          {
+            "variableName": "TOKEN_A_AMOUNT",
+            "job": {
+              "tasks": [
+                {
+                  "maxTask": {
+                    "tasks": [
+                      {
+                        "valueTask": {
+                          "big": "0"
+                        }
+                      },
+                      {
+                        "valueTask": {
+                          "big": "${TOKEN_A}"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "variableName": "Y_MULTIPLIER",
+            "job": {
+              "tasks": [
+                {
+                  "valueTask": {
+                    "big": "${SQRT_P}"
+                  }
+                },
+                {
+                  "subtractTask": {
+                    "big": "${SQRT_P_A}"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "cacheTask": {
+        "cacheItems": [
+          {
+            "variableName": "TOKEN_B",
+            "job": {
+              "tasks": [
+                {
+                  "valueTask": {
+                    "big": "${ORCA_POSITION_LIQUIDITY}"
+                  }
+                },
+                {
+                  "multiplyTask": {
+                    "big": "${Y_MULTIPLIER}"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "cacheTask": {
+        "cacheItems": [
+          {
+            "variableName": "TOKEN_B_AMOUNT",
+            "job": {
+              "tasks": [
+                {
+                  "maxTask": {
+                    "tasks": [
+                      {
+                        "valueTask": {
+                          "big": "0"
+                        }
+                      },
+                      {
+                        "valueTask": {
+                          "big": "${TOKEN_B}"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "variableName": "TOKEN_A_TOTAL_VALUE",
+            "job": {
+              "tasks": [
+                {
+                  "valueTask": {
+                    "big": "${TOKEN_A_PRICE}"
+                  }
+                },
+                {
+                  "multiplyTask": {
+                    "big": "${TOKEN_A_AMOUNT}"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "cacheTask": {
+        "cacheItems": [
+          {
+            "variableName": "TOKEN_B_TOTAL_VALUE",
+            "job": {
+              "tasks": [
+                {
+                  "valueTask": {
+                    "big": "${TOKEN_B_PRICE}"
+                  }
+                },
+                {
+                  "multiplyTask": {
+                    "big": "${TOKEN_B_AMOUNT}"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "cacheTask": {
+        "cacheItems": [
+          {
+            "variableName": "TOTAL_VAULT_VALUE",
+            "job": {
+              "tasks": [
+                {
+                  "valueTask": {
+                    "big": "${TOKEN_A_TOTAL_VALUE}"
+                  }
+                },
+                {
+                  "addTask": {
+                    "big": "${TOKEN_B_TOTAL_VALUE}"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "variableName": "TOTAL_LP_SUPPLY",
+            "job": {
+              "tasks": [
+                {
+                  "splTokenParseTask": {
+                    "mintAddress": "9z2a5zNvipEQxjyFfZf3gV4nw9NCr73FdRs1iq3VjTXc"
+                  }
+                },
+                {
+                  "jsonParseTask": {
+                    "path": "$.supply",
+                    "aggregationMethod": "NONE"
+                  }
+                },
+                {
+                  "divideTask": {
+                    "big": "1000000"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "cacheTask": {
+        "cacheItems": [
+          {
+            "variableName": "PRICE_PER_LP_TOKEN",
+            "job": {
+              "tasks": [
+                {
+                  "valueTask": {
+                    "big": "${TOTAL_VAULT_VALUE}"
+                  }
+                },
+                {
+                  "divideTask": {
+                    "big": "${TOTAL_LP_SUPPLY}"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "valueTask": {
+        "big": "${PRICE_PER_LP_TOKEN}"
+      }
+    }
+  ]
+}

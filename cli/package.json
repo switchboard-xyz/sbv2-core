@@ -52,7 +52,7 @@
     "@switchboard-xyz/common": "^2.0.0",
     "@switchboard-xyz/near.js": "^2.0.16",
     "@switchboard-xyz/sbv2-utils": "^0.1.47",
-    "@switchboard-xyz/switchboard-v2": "^0.0.134",
+    "@switchboard-xyz/switchboard-v2": "0.0.135-beta.0",
     "aptos": "^1.3.13",
     "assert": "^2.0.0",
     "aws-sdk": "^2.1167.0",
