@@ -526,7 +526,7 @@ export abstract class SolanaBaseCommand
       case "Lease": {
         const lease = types.LeaseAccountData.decode(accountInfo.data);
         const leaseAccount = new LeaseAccount(this.program, publicKey);
-        const balance = await leaseAccount.getBalance(lease.escrow);
+        const balance = await leaseAccount.fetchBalance(lease.escrow);
 
         if (jsonFlag) {
           return {

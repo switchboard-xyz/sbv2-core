@@ -113,7 +113,7 @@ export default class JsonCreateAggregator extends BaseCommand {
       _.isArray(aggregatorJobs) ? aggregatorJobs : []
     ).map<JobInitParams>((job: any) => ({
       name: job.name ?? "",
-      authority: authority.publicKey,
+      authority: authority,
       data: Buffer.from(
         OracleJob.encodeDelimited(OracleJob.fromObject(job)).finish()
       ),
