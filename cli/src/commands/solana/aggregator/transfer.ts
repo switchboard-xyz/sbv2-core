@@ -82,7 +82,7 @@ export default class AggregatorTransfer extends BaseCommand {
         newCrank: flags.newCrank
           ? new CrankAccount(this.program, new PublicKey(flags.newCrank))
           : undefined,
-        loadAmount: flags.loadAmount
+        fundAmount: flags.loadAmount
           ? Number.parseFloat(flags.loadAmount)
           : undefined,
       }

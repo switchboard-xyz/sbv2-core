@@ -63,7 +63,7 @@ export default class LeaseExtend extends BaseCommand {
       throw new Error(`Failed to load lease account. Has it been created yet?`);
     });
 
-    const [funderTokenAddress, wrapFundsTxn] =
+    const [funderTokenWallet, wrapFundsTxn] =
       await this.program.mint.getOrCreateWrappedUserInstructions(this.payer, {
         fundUpTo: amount,
       });
@@ -74,7 +74,7 @@ export default class LeaseExtend extends BaseCommand {
 
     if (!this.silent) {
       const initialFunderBalance = await this.program.mint.fetchBalance(
-        funderTokenAddress
+        funderTokenWallet
       );
       this.logger.log(
         chalkString("Initial Lease Balance", initialLeaseBalance, 24)
@@ -85,8 +85,8 @@ export default class LeaseExtend extends BaseCommand {
     }
 
     const txn = await leaseAccount.extendInstruction(this.payer, {
-      amount: amount,
-      funderTokenAddress: funderTokenAddress,
+      fundAmount: amount,
+      funderTokenWallet: funderTokenWallet,
       funderAuthority: this.program.wallet.payer,
     });
     const signature = await this.signAndSend(wrapFundsTxn.combine(txn));

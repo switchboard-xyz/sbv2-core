@@ -138,7 +138,7 @@ export default class JsonCreateAggregator extends BaseCommand {
       crankPubkey: crankKey,
       // lease params
       fundAmount: Number(flags.leaseAmount),
-      funderTokenAccount: tokenWallet,
+      funderTokenWallet: tokenWallet,
       // permission params
       enable: flags.enable ?? false,
       queueAuthority: queueAuthority,

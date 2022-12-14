@@ -15,6 +15,7 @@ import chalk from "chalk";
 import {
   AnchorWallet,
   SBV2_DEVNET_PID,
+  SwitchboardNetwork,
   SwitchboardProgram,
 } from "@switchboard-xyz/solana.js";
 import fs from "fs";
@@ -99,6 +100,7 @@ export default class SolanaValidatorUp extends BaseCommand {
       if (this.solanaChildProcess) {
         this.solanaChildProcess.kill();
       }
+
       if (this.docker) {
         this.docker.stop();
       }
@@ -177,7 +179,7 @@ export default class SolanaValidatorUp extends BaseCommand {
 
     this.logger.info(`Creating a localnet Switchboard network`);
 
-    const [network] = await program.createNetwork({
+    const [network] = await SwitchboardNetwork.create(program, {
       keypair: queueKeypair,
       name: "Queue-1",
       reward: Number.parseFloat(flags.reward ?? "0"),
@@ -194,13 +196,14 @@ export default class SolanaValidatorUp extends BaseCommand {
         },
       ],
     });
-    if (network.oracles.length < 1) {
+    if (network.oracles.length === 0) {
       throw new Error(`Failed to create the Switchboard oracle`);
     }
+
     const oracle = network.oracles[0];
 
     this.logger.info(`${chalk.green(CHECK_ICON)} Switchboard network created`);
-    this.logger.info(`Queue: ${network.queueAccount.publicKey}`);
+    this.logger.info(`Queue: ${network.queue.account.publicKey}`);
     this.logger.info(`Oracle: ${oracle.account.publicKey}`);
 
     this.docker = new DockerOracle(
